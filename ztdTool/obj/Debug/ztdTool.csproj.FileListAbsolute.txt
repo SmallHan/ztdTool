@@ -1,0 +1,10 @@
+D:\MyDemo\ztdTool\ztdTool\ztdTool\bin\Debug\ztdTool.exe.config
+D:\MyDemo\ztdTool\ztdTool\ztdTool\bin\Debug\ztdTool.exe
+D:\MyDemo\ztdTool\ztdTool\ztdTool\bin\Debug\ztdTool.pdb
+D:\MyDemo\ztdTool\ztdTool\ztdTool\obj\Debug\ztdTool.csprojResolveAssemblyReference.cache
+D:\MyDemo\ztdTool\ztdTool\ztdTool\obj\Debug\ztdTool.FrmMain.resources
+D:\MyDemo\ztdTool\ztdTool\ztdTool\obj\Debug\ztdTool.Properties.Resources.resources
+D:\MyDemo\ztdTool\ztdTool\ztdTool\obj\Debug\ztdTool.csproj.GenerateResource.Cache
+D:\MyDemo\ztdTool\ztdTool\ztdTool\obj\Debug\ztdTool.exe.licenses
+D:\MyDemo\ztdTool\ztdTool\ztdTool\obj\Debug\ztdTool.exe
+D:\MyDemo\ztdTool\ztdTool\ztdTool\obj\Debug\ztdTool.pdb
