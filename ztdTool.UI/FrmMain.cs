@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using ztdTool.Common;
 
-namespace ztdTool
+namespace ztdTool.UI
 {
     public partial class FrmMain : BaseFrm
     {

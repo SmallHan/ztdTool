@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ztdTool.Common;
 
-namespace ztdTool
+namespace ztdTool.UI
 {
     public partial class FrmConfigure :BaseFrm
     {

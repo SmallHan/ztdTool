@@ -12,7 +12,7 @@ using ztdTool.Common;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace ztdTool
+namespace ztdTool.UI
 {
     public partial class FrmDisgnCode : BaseFrm
     {

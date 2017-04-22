@@ -1,4 +1,4 @@
-﻿namespace ztdTool
+﻿namespace ztdTool.UI
 {
     partial class FrmGenInterFace
     {
