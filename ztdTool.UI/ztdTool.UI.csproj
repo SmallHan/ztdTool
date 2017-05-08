@@ -104,9 +104,23 @@
     <Compile Include="FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmSelctGenScript.cs" />
+    <Compile Include="FrmResultDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmResultDetail.Designer.cs">
+      <DependentUpon>FrmResultDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmSelctGenScript.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FrmSelctGenScript.Designer.cs">
       <DependentUpon>FrmSelctGenScript.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmSqlSelect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmSqlSelect.Designer.cs">
+      <DependentUpon>FrmSqlSelect.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WaitForm1.cs">
@@ -136,8 +150,14 @@
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmResultDetail.resx">
+      <DependentUpon>FrmResultDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmSelctGenScript.resx">
       <DependentUpon>FrmSelctGenScript.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmSqlSelect.resx">
+      <DependentUpon>FrmSqlSelect.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
