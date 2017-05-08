@@ -158,6 +158,20 @@ namespace ztdTool.UI
             xtMain.Controls.Add(frm);
             frm.Show();
         }
+        private void barScript_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            if (!CheckConfig()) return;
+            Utils.CloseForm(xtMain);
+            SetFormAttributeAndShow(new FrmSqlSelect());
+        }
+        private void SetFormAttributeAndShow(Form frm)
+        {
+            frm.FormBorderStyle = FormBorderStyle.None;
+            frm.TopLevel = false;
+            frm.Dock = DockStyle.Fill;
+            xtMain.Controls.Add(frm);
+            frm.Show();
+        }
         /// <summary>
         /// 检验是否有配置
         /// </summary>
@@ -179,5 +193,9 @@ namespace ztdTool.UI
                 XmlHelper.LoggerConfigToXml();
             }
         }
+
+
+
+
     }
 }

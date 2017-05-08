@@ -36,6 +36,7 @@
             this.bar_GENDT = new DevExpress.XtraBars.BarButtonItem();
             this.bar_GENCODE = new DevExpress.XtraBars.BarButtonItem();
             this.bar_GENINTER = new DevExpress.XtraBars.BarButtonItem();
+            this.barSelect = new DevExpress.XtraBars.BarButtonItem();
             this.barSubItem7 = new DevExpress.XtraBars.BarSubItem();
             this.bar_SYS_CONFIG = new DevExpress.XtraBars.BarButtonItem();
             this.bar3 = new DevExpress.XtraBars.Bar();
@@ -50,7 +51,7 @@
             this.barSubItem3 = new DevExpress.XtraBars.BarSubItem();
             this.barSubItem4 = new DevExpress.XtraBars.BarSubItem();
             this.xtMain = new DevExpress.XtraEditors.XtraScrollableControl();
-            this.barSelect = new DevExpress.XtraBars.BarButtonItem();
+            this.barScript = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -78,9 +79,10 @@
             this.bar_GENINTER,
             this.barSubItem7,
             this.bar_SYS_CONFIG,
-            this.barSelect});
+            this.barSelect,
+            this.barScript});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 13;
+            this.barManager1.MaxItemId = 14;
             this.barManager1.StatusBar = this.bar3;
             // 
             // bar1
@@ -113,7 +115,8 @@
             new DevExpress.XtraBars.LinkPersistInfo(this.bar_GENDT),
             new DevExpress.XtraBars.LinkPersistInfo(this.bar_GENCODE),
             new DevExpress.XtraBars.LinkPersistInfo(this.bar_GENINTER),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barSelect)});
+            new DevExpress.XtraBars.LinkPersistInfo(this.barSelect),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barScript)});
             this.barSubItem1.Name = "barSubItem1";
             // 
             // bar_GENDT
@@ -136,6 +139,13 @@
             this.bar_GENINTER.Id = 9;
             this.bar_GENINTER.Name = "bar_GENINTER";
             this.bar_GENINTER.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bar_GENINTER_ItemClick);
+            // 
+            // barSelect
+            // 
+            this.barSelect.Caption = "脚本生成设计代码";
+            this.barSelect.Id = 12;
+            this.barSelect.Name = "barSelect";
+            this.barSelect.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barSelect_ItemClick);
             // 
             // barSubItem7
             // 
@@ -169,28 +179,28 @@
             this.barDockControlTop.CausesValidation = false;
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
-            this.barDockControlTop.Size = new System.Drawing.Size(1572, 60);
+            this.barDockControlTop.Size = new System.Drawing.Size(1572, 56);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 784);
-            this.barDockControlBottom.Size = new System.Drawing.Size(1572, 25);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 786);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1572, 23);
             // 
             // barDockControlLeft
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 60);
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 724);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 56);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 730);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1572, 60);
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 724);
+            this.barDockControlRight.Location = new System.Drawing.Point(1572, 56);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 730);
             // 
             // bar_TOOL
             // 
@@ -232,17 +242,17 @@
             // xtMain
             // 
             this.xtMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.xtMain.Location = new System.Drawing.Point(0, 60);
+            this.xtMain.Location = new System.Drawing.Point(0, 56);
             this.xtMain.Name = "xtMain";
-            this.xtMain.Size = new System.Drawing.Size(1572, 724);
+            this.xtMain.Size = new System.Drawing.Size(1572, 730);
             this.xtMain.TabIndex = 6;
             // 
-            // barSelect
+            // barScript
             // 
-            this.barSelect.Caption = "脚本生成设计代码";
-            this.barSelect.Id = 12;
-            this.barSelect.Name = "barSelect";
-            this.barSelect.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barSelect_ItemClick);
+            this.barScript.Caption = "执行脚本";
+            this.barScript.Id = 13;
+            this.barScript.Name = "barScript";
+            this.barScript.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barScript_ItemClick);
             // 
             // FrmMain
             // 
@@ -262,7 +272,6 @@
             this.Load += new System.EventHandler(this.FrmMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -290,6 +299,7 @@
         private DevExpress.XtraBars.BarSubItem barSubItem4;
         private DevExpress.XtraEditors.XtraScrollableControl xtMain;
         private DevExpress.XtraBars.BarButtonItem barSelect;
+        private DevExpress.XtraBars.BarButtonItem barScript;
 
     }
 }
