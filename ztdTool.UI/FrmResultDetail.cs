@@ -1,4 +1,5 @@
 ﻿using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraGrid.Views.Grid;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,12 +20,10 @@ namespace ztdTool.UI
         }
 
         private DataTable dtTemp = new DataTable();
-        private string usedSecond = string.Empty;
-        public FrmResultDetail(DataTable _dtTemp, string _usedSecond)
+        public FrmResultDetail(DataTable _dtTemp)
         {
             InitializeComponent();
             this.dtTemp = _dtTemp;
-            this.usedSecond = _usedSecond;
         }
         private void FrmResultDetail_Load(object sender, EventArgs e)
         {
@@ -35,6 +34,7 @@ namespace ztdTool.UI
         /// </summary>
         private  void GenColumn(DataTable dtGrid)
         {
+            ClearColumn(this.gv_PREVIEW);
             if (dtGrid != null)
             {
                 for (var i = 0; i < dtGrid.Columns.Count; i++)
@@ -50,13 +50,13 @@ namespace ztdTool.UI
                     gridColumn.Visible = true;
                     gridColumn.VisibleIndex = i;
                 }
+                this.gv_PREVIEW.OptionsView.ColumnAutoWidth = false;
                 this.gc_PREVIEW.DataSource = dtGrid;
             }
         }
-        private void ShowInfo()
+        private void ClearColumn(GridView gv)
         {
-            lbl_TIME.Text = usedSecond;
-            lbl_ROW.Text = dtTemp.Rows.Count.ToString();
+            gv.Columns.Clear();
         }
     }
 }

@@ -26,7 +26,8 @@ namespace ztdTool.UI
         private DataTable dtTable = new DataTable();
         private OracleBusiness oraBus = new OracleBusiness();
         private Dictionary<XtraTabPage, MemoEdit> controlDic = new Dictionary<XtraTabPage, MemoEdit>();
-        private Dictionary<XtraTabPage, DataTable> dtDic = new Dictionary<XtraTabPage, DataTable>();
+        private Dictionary<XtraTabPage, ExecSqlModel> dtDic = new Dictionary<XtraTabPage, ExecSqlModel>();
+
         private void FrmSqlSelect_Load(object sender, EventArgs e)
         {
             try
@@ -35,7 +36,7 @@ namespace ztdTool.UI
                 CreateTabAndText();
                 InitControl();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorMsg(ex);
             }
@@ -135,10 +136,10 @@ namespace ztdTool.UI
         /// </summary>
         private void CreateTabAndText()
         {
-            int pageCount=xtra_SQL.TabPages.Count;
+            int pageCount = xtra_SQL.TabPages.Count;
             XtraTabPage xtra = new XtraTabPage();
             xtra.Dock = DockStyle.Fill;
-            xtra.Name="xtra"+pageCount+1;
+            xtra.Name = "xtra" + pageCount + 1;
             xtra.Text = "SQL";
             MemoEdit momoEdit = new MemoEdit();
             momoEdit.Name = "momoEdit" + pageCount + 1;
@@ -151,6 +152,7 @@ namespace ztdTool.UI
             {
                 controlDic.Add(xtra, momoEdit);
             }
+            SetBarValue("0");
         }
         /// <summary>
         /// 异步执行sql
@@ -159,17 +161,16 @@ namespace ztdTool.UI
         /// <param name="e"></param>
         private void tool_EXEC_Click(object sender, EventArgs e)
         {
-            XtraTabPage xtra = xtra_SQL.SelectedTabPage;
-            string qrySql = xtra.Text.Trim().ToUpper();
             var txtObject = controlDic[xtra_SQL.SelectedTabPage];
-            if (string.IsNullOrWhiteSpace(txtObject.Text.Trim()))
-            {
-                ShowMessage("限制查询最多条数不能为空");
-                return;
-            }
+            string qrySql = txtObject.SelectedText == string.Empty ? txtObject.Text.Trim().ToUpper() : txtObject.SelectedText.Trim().ToUpper();
             if (string.IsNullOrWhiteSpace(qrySql))
             {
                 ShowMessage("查询sql不能为空");
+                return;
+            }
+            if (ck_MORE_NUMBER.Checked && string.IsNullOrWhiteSpace(txt_NUMBER.Text))
+            {
+                ShowMessage("限制查询最多条数不能为空");
                 return;
             }
             if (!IsSqlSafe(qrySql))
@@ -180,26 +181,56 @@ namespace ztdTool.UI
             GenColumn(qrySql);
         }
 
-        private async void GenColumn(string qrySql)
+        private void GenColumn(string qrySql)
         {
             ShowWait();
             var txtObject = controlDic[xtra_SQL.SelectedTabPage];
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            Task<DataTable> dtRes = ExecSql(qrySql, Convert.ToInt32(txtObject.Text.Trim()));
-            DataTable dtAysnc = await dtRes;
+            DataTable dtRes = ExecSql(qrySql, ck_MORE_NUMBER.Checked, ck_MORE_NUMBER.Checked ? Convert.ToInt32(txt_NUMBER.Text.Trim()) : 0);
+            sw.Stop();
+            var costSeconds = sw.ElapsedMilliseconds / 1000.0 + "s";
             //根据当前选择的Xtra加入到字典里面
             if (!dtDic.ContainsKey(xtra_SQL.SelectedTabPage))
             {
-                dtDic.Add(xtra_SQL.SelectedTabPage, dtAysnc);
+                ExecSqlModel ex = new ExecSqlModel()
+                {
+                    dt = dtRes,
+                    rowCount = dtRes.Rows.Count,
+                    execSeconds = costSeconds
+                };
+                dtDic.Add(xtra_SQL.SelectedTabPage, ex);
             }
             else
             {
-                dtDic[xtra_SQL.SelectedTabPage] = dtAysnc;
+                var exec = dtDic[xtra_SQL.SelectedTabPage];
+                exec.dt = dtRes;
+                exec.rowCount = dtRes.Rows.Count;
+                exec.execSeconds = costSeconds;
             }
-            FrmResultDetail frm = new FrmResultDetail(dtDic[xtra_SQL.SelectedTabPage], sw.ElapsedMilliseconds / 1000 + "s");
-
+            Utils.CloseForm(panelControl6);
+            ShowExceSqlView(dtDic[xtra_SQL.SelectedTabPage].dt);
+            SetBarValue(costSeconds, dtRes.Rows.Count);
             CloseWait();
+        }
+        /// <summary>
+        /// 打开sql查询结果的界面
+        /// </summary>
+        private void ShowExceSqlView(DataTable dtTemp = null)
+        {
+            FrmResultDetail frm = dtTemp != null ? new FrmResultDetail(dtTemp) : new FrmResultDetail();
+            frm.TopLevel = false;
+            frm.Dock = DockStyle.Fill;
+            panelControl6.Controls.Add(frm);
+            frm.Show();
+        }
+        /// <summary>
+        /// 设置底部的值
+        /// </summary>
+        private void SetBarValue(string costSecond, int rowCount = 0)
+        {
+            this.lbl_TIME.Text = costSecond;
+            this.lbl_ROW.Text = rowCount.ToString();
         }
         /// <summary>
         /// 验证sql是否符合要求
@@ -209,20 +240,40 @@ namespace ztdTool.UI
         private bool IsSqlSafe(string qryStr)
         {
             string regex = @"^SELECT(.|\n)+FROM(.|\n)+";
-            return Regex.IsMatch(qryStr, regex);
+            return Regex.IsMatch(qryStr, regex, RegexOptions.IgnoreCase);
         }
         /// <summary>
         /// 异步执行
         /// </summary>
-        private async Task<DataTable> ExecSql(string qrySql,int rowNumber)
+        private DataTable ExecSql(string qrySql, bool isCheckFkg, int rowNumber)
         {
-            return await Task.Factory.StartNew(() =>
+            StringBuilder sb = new StringBuilder("SELECT ROWNUM,T.* FROM (");
+            if (isCheckFkg)
             {
-                StringBuilder sb = new StringBuilder("SELECT T.*,rownum FROM (");
-                sb.AppendFormat(@"{0}) T where rownum<{1}", qrySql, rowNumber);
-                DataTable dtRes = oraBus.QueryToDataTable(sb.ToString(), "TAB_FILED");
-                return dtRes;
-            });
+                sb.AppendFormat(@"{0}) T where rownum<={1}", qrySql, rowNumber);
+            }
+            else
+            {
+                sb.AppendFormat(@"{0}) T", qrySql);
+            }
+            DataTable dtRes = oraBus.QueryToDataTable(sb.ToString(), "TAB_FILED");
+            return dtRes;
+        }
+
+        private void xtra_SQL_SelectedPageChanged(object sender, TabPageChangedEventArgs e)
+        {
+            Utils.CloseForm(panelControl6);
+            if (dtDic.ContainsKey(xtra_SQL.SelectedTabPage))
+            {
+                //获取当前选中的TabPage
+                var exec = dtDic[xtra_SQL.SelectedTabPage];
+                ShowExceSqlView(exec != null ? exec.dt : null);
+                SetBarValue(exec.execSeconds, exec.rowCount);
+            }
+            else
+            {
+                SetBarValue("0");
+            }
         }
     }
 }
