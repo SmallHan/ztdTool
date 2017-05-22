@@ -1,4 +1,5 @@
 ﻿using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraRichEdit.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,6 +19,7 @@ namespace ztdTool.UI
         public FrmSelctGenScript()
         {
             InitializeComponent();
+            richSql.ReplaceService<ISyntaxHighlightService>(new CustomSyntaxHighlightService(richSql.Document)); 
         }
         public DataTable dtScript = new DataTable();
         private DataTable dtFiled = new DataTable();
@@ -50,12 +52,13 @@ namespace ztdTool.UI
 
         private void btn_GEN_GRID_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(me_SQL.Text))
+            string qrySql = string.IsNullOrWhiteSpace(richSql.Document.GetText(richSql.Document.Selection)) ? richSql.Text.Trim().ToUpper() : richSql.Document.GetText(richSql.Document.Selection).ToUpper();
+            if (string.IsNullOrWhiteSpace(qrySql))
             {
                 ShowMessage("查询sql不能为空");
                 return;
             }
-            string qrySql = me_SQL.Text.Trim().ToUpper();
+            qrySql = qrySql.ToUpper();
             if (!IsSqlSafe(qrySql))
             {
                 ShowMessage("查询sql格式不对");
@@ -72,7 +75,7 @@ namespace ztdTool.UI
             }
             else
             {
-                ShowMessage("查询失败");
+                ShowMessage("查询失败,详情请看日志");
             }
 
         }

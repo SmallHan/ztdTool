@@ -8,7 +8,7 @@ using ztdTool.Common;
 
 namespace ztdTool.UI
 {
-    public class BaseFrm:Form
+    public class BaseFrm : DevExpress.XtraEditors.XtraForm
     {
         protected  void ShowMessage(string msg)
         {

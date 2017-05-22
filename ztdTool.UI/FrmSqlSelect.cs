@@ -1,5 +1,8 @@
 ﻿using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraRichEdit;
+using DevExpress.XtraRichEdit.Services;
 using DevExpress.XtraTab;
 using System;
 using System.Collections.Generic;
@@ -25,7 +28,7 @@ namespace ztdTool.UI
 
         private DataTable dtTable = new DataTable();
         private OracleBusiness oraBus = new OracleBusiness();
-        private Dictionary<XtraTabPage, MemoEdit> controlDic = new Dictionary<XtraTabPage, MemoEdit>();
+        private Dictionary<XtraTabPage, RichEditControl> controlDic = new Dictionary<XtraTabPage, RichEditControl>();
         private Dictionary<XtraTabPage, ExecSqlModel> dtDic = new Dictionary<XtraTabPage, ExecSqlModel>();
 
         private void FrmSqlSelect_Load(object sender, EventArgs e)
@@ -62,7 +65,7 @@ namespace ztdTool.UI
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendFormat(@"SELECT T2.TABLE_NAME,T2.COMMENTS,ROWNUM AS SQE FROM USER_TABLES T1,USER_TAB_COMMENTS T2 WHERE T1.TABLE_NAME=T2.TABLE_NAME");
-                DataTable dtRes = oraBus.QueryToDataTable(sb.ToString(), "TAB_NAME");
+                DataTable dtRes = ExcSql(sb.ToString());
                 if (ExDtMethod.GetRowCount(dtRes) > 0)
                 {
                     dtTable = dtRes;
@@ -105,7 +108,7 @@ namespace ztdTool.UI
                 ShowMessage("表名不能为空");
                 return;
             }
-
+            list_TABLE.SelectedValue = txt_SERACH_TABLE.Text.ToUpper();
 
         }
         private void txt_SERACH_TABLE_KeyDown(object sender, KeyEventArgs e)
@@ -114,11 +117,31 @@ namespace ztdTool.UI
             {
                 GoToTable();
             }
+
         }
 
         private void list_TABLE_DoubleClick(object sender, EventArgs e)
         {
+            if (!string.IsNullOrWhiteSpace(Convert.ToString(this.list_TABLE.SelectedValue)))
+            {
+                string value = list_TABLE.SelectedValue.ToString();
+                string sql1 = @"SELECT A.COLUMN_NAME,A.DATA_TYPE,A.DATA_LENGTH,A.NULLABLE,B.COMMENTS FROM USER_TAB_COLUMNS A
+                LEFT JOIN  USER_COL_COMMENTS B ON  A.COLUMN_NAME = B.COLUMN_NAME AND  B.TABLE_NAME= UPPER('" + value + @"')
+                 WHERE A.TABLE_NAME= UPPER('" + value + "') ORDER BY A.COLUMN_ID";
 
+                string sql2 = @"SELECT DISTINCT INDEX_NAME,
+                                LISTAGG(COLUMN_NAME,'，') WITHIN GROUP(ORDER BY INDEX_NAME)
+                                OVER(PARTITION BY INDEX_NAME) AS INDEX_COLUMN FROM  (
+                                SELECT T.*,I.INDEX_TYPE FROM USER_IND_COLUMNS T,USER_INDEXES I WHERE T.INDEX_NAME = I.INDEX_NAME AND
+                                T.TABLE_NAME='" + value + "') AB";
+
+                string sql3 = "SELECT TRIGGER_NAME FROM ALL_TRIGGERS WHERE TABLE_NAME='" + value + "' ORDER BY TRIGGER_NAME";
+                FrmColumn clm = new FrmColumn();
+                clm.Dt1 = ExcSql(sql1);
+                clm.Dt2 = ExcSql(sql2);
+                clm.Dt3 = ExcSql(sql3);
+                clm.Show();
+            }   
         }
 
         /// <summary>
@@ -141,16 +164,19 @@ namespace ztdTool.UI
             xtra.Dock = DockStyle.Fill;
             xtra.Name = "xtra" + pageCount + 1;
             xtra.Text = "SQL";
-            MemoEdit momoEdit = new MemoEdit();
-            momoEdit.Name = "momoEdit" + pageCount + 1;
-            momoEdit.Dock = DockStyle.Fill;
-            xtra.Controls.Add(momoEdit);
+            RichEditControl rich = new RichEditControl();
+            rich.BorderStyle = BorderStyles.NoBorder;
+            rich.ActiveViewType = RichEditViewType.Simple;
+            rich.ReplaceService<ISyntaxHighlightService>(new CustomSyntaxHighlightService(rich.Document));  
+            rich.Name = "rich" + pageCount + 1;
+            rich.Dock = DockStyle.Fill;
+            xtra.Controls.Add(rich);
             xtra_SQL.SelectedTabPage = xtra;
-            momoEdit.Focus();
+            rich.Focus();
             xtra_SQL.TabPages.Add(xtra);
             if (!controlDic.ContainsKey(xtra))
             {
-                controlDic.Add(xtra, momoEdit);
+                controlDic.Add(xtra, rich);
             }
             SetBarValue("0");
         }
@@ -162,7 +188,7 @@ namespace ztdTool.UI
         private void tool_EXEC_Click(object sender, EventArgs e)
         {
             var txtObject = controlDic[xtra_SQL.SelectedTabPage];
-            string qrySql = txtObject.SelectedText == string.Empty ? txtObject.Text.Trim().ToUpper() : txtObject.SelectedText.Trim().ToUpper();
+            string qrySql = string.IsNullOrWhiteSpace(txtObject.Document.GetText(txtObject.Document.Selection)) ? txtObject.Text.Trim().ToUpper() : txtObject.Document.GetText(txtObject.Document.Selection).ToUpper();
             if (string.IsNullOrWhiteSpace(qrySql))
             {
                 ShowMessage("查询sql不能为空");
@@ -189,28 +215,35 @@ namespace ztdTool.UI
             sw.Start();
             DataTable dtRes = ExecSql(qrySql, ck_MORE_NUMBER.Checked, ck_MORE_NUMBER.Checked ? Convert.ToInt32(txt_NUMBER.Text.Trim()) : 0);
             sw.Stop();
-            var costSeconds = sw.ElapsedMilliseconds / 1000.0 + "s";
-            //根据当前选择的Xtra加入到字典里面
-            if (!dtDic.ContainsKey(xtra_SQL.SelectedTabPage))
+            if (ExDtMethod.IsTransOK(dtRes))
             {
-                ExecSqlModel ex = new ExecSqlModel()
+                var costSeconds = sw.ElapsedMilliseconds / 1000.0 + "s";
+                //根据当前选择的Xtra加入到字典里面
+                if (!dtDic.ContainsKey(xtra_SQL.SelectedTabPage))
                 {
-                    dt = dtRes,
-                    rowCount = dtRes.Rows.Count,
-                    execSeconds = costSeconds
-                };
-                dtDic.Add(xtra_SQL.SelectedTabPage, ex);
+                    ExecSqlModel ex = new ExecSqlModel()
+                    {
+                        dt = dtRes,
+                        rowCount = dtRes.Rows.Count,
+                        execSeconds = costSeconds
+                    };
+                    dtDic.Add(xtra_SQL.SelectedTabPage, ex);
+                }
+                else
+                {
+                    var exec = dtDic[xtra_SQL.SelectedTabPage];
+                    exec.dt = dtRes;
+                    exec.rowCount = dtRes.Rows.Count;
+                    exec.execSeconds = costSeconds;
+                }
+                Utils.CloseForm(panelControl6);
+                ShowExceSqlView(dtDic[xtra_SQL.SelectedTabPage].dt);
+                SetBarValue(costSeconds, dtRes.Rows.Count);
             }
             else
             {
-                var exec = dtDic[xtra_SQL.SelectedTabPage];
-                exec.dt = dtRes;
-                exec.rowCount = dtRes.Rows.Count;
-                exec.execSeconds = costSeconds;
+                ShowMessage("查询失败,错误原因请看日志");
             }
-            Utils.CloseForm(panelControl6);
-            ShowExceSqlView(dtDic[xtra_SQL.SelectedTabPage].dt);
-            SetBarValue(costSeconds, dtRes.Rows.Count);
             CloseWait();
         }
         /// <summary>
@@ -256,7 +289,7 @@ namespace ztdTool.UI
             {
                 sb.AppendFormat(@"{0}) T", qrySql);
             }
-            DataTable dtRes = oraBus.QueryToDataTable(sb.ToString(), "TAB_FILED");
+            DataTable dtRes = ExcSql(sb.ToString());
             return dtRes;
         }
 
@@ -274,6 +307,15 @@ namespace ztdTool.UI
             {
                 SetBarValue("0");
             }
+        }
+        public DataTable ExcSql(string sql)
+        {
+            DataTable dtRes = oraBus.QueryToDataTable(sql);
+            if (ExDtMethod.IsTransOK(dtRes))
+            {
+                return dtRes;
+            }
+            return null;
         }
     }
 }

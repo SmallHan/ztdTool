@@ -26,7 +26,6 @@ namespace ztdTool.UI
             {
                 InitColumn();
                 BindData();
-                InitTxtLikeSerach();
             }
             catch (Exception ex)
             {
@@ -43,12 +42,12 @@ namespace ztdTool.UI
         /// <summary>
         /// TextBox 实现模糊查询
         /// </summary>
-        private void InitTxtLikeSerach()
+        private async void InitTxtLikeSerach(DataTable dtTemp)
         {
             this.txt_SERACH.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             this.txt_SERACH.AutoCompleteSource = AutoCompleteSource.CustomSource;
             AutoCompleteStringCollection ac = new AutoCompleteStringCollection();
-            List<string> list = (List<string>)ExDtMethod.Select<string>(dtTable, "TABLE_NAME");
+            List<string> list = (List<string>)ExDtMethod.Select<string>(dtTemp, "TABLE_NAME");
             if (list.Count > 0)
             {
                 foreach (var it in list)
@@ -58,22 +57,31 @@ namespace ztdTool.UI
             }
             this.txt_SERACH.AutoCompleteCustomSource = ac;
         }
-        private void BindData()
+        private async void BindData()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendFormat(@"SELECT T2.TABLE_NAME,T2.COMMENTS,ROWNUM AS SQE FROM USER_TABLES T1,USER_TAB_COMMENTS T2 WHERE T1.TABLE_NAME=T2.TABLE_NAME");
-            DataTable dtRes = oraBus.QueryToDataTable(sb.ToString(), "TAB_NAME");
-            if (ExDtMethod.GetRowCount(dtRes) > 0)
-            {
-                dtTable = dtRes;
-            }
-            else
-            {
-                dtTable.Rows.Clear();
-            }
+            Task<DataTable> dtRes = GetFieldData();
+            var dtTemp = await dtRes;
             this.gc_TABLE.DataSource = dtTable;
+            InitTxtLikeSerach(dtTemp);
         }
 
+        private async Task<DataTable> GetFieldData()
+        {
+            return await Task.Factory.StartNew(() => {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat(@"SELECT T2.TABLE_NAME,T2.COMMENTS,ROWNUM AS SQE FROM USER_TABLES T1,USER_TAB_COMMENTS T2 WHERE T1.TABLE_NAME=T2.TABLE_NAME");
+                DataTable dtRes = oraBus.QueryToDataTable(sb.ToString(), "TAB_NAME");
+                if (ExDtMethod.GetRowCount(dtRes) > 0)
+                {
+                    dtTable = dtRes;
+                }
+                else
+                {
+                    dtTable.Rows.Clear();
+                }
+                return dtTable;
+            });
+        }
         private void btn_SERACH_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txt_SERACH.Text))

@@ -27,6 +27,7 @@ namespace ztdTool.UI
         }
         private DataTable dtFiled = new DataTable();
         public DataTable dtScript = new DataTable();
+        private DataTable dtSerach = new DataTable();
         public string qryStr = string.Empty;
         OracleBusiness oraBus = new OracleBusiness();
 
@@ -38,6 +39,7 @@ namespace ztdTool.UI
             {
                 InitColumn();
                 QryFiledAll();
+                BindDtSerach();
                 LoadListBoxData();
             }
             catch (Exception ex)
@@ -47,6 +49,9 @@ namespace ztdTool.UI
         }
         private void InitColumn()
         {
+
+            dtSerach.Columns.Add("SERACH_FIELD");
+
             dtFiled.Columns.Add("COLUMN_NAME");
             dtFiled.Columns.Add("COMMENTS");
 
@@ -76,10 +81,25 @@ namespace ztdTool.UI
                 dtFiled.Rows.Clear();
             }
         }
+        private void BindDtSerach()
+        {
+            if (ExDtMethod.GetRowCount(dtFiled) > 0)
+            {
+                foreach (DataRow row in dtFiled.Rows)
+                {
+                    DataRow newRow = dtSerach.NewRow();
+                    string comments = Convert.ToString(row["COMMENTS"]);
+                    string columnName = Convert.ToString(row["COLUMN_NAME"]);
+                    newRow["SERACH_FIELD"] = columnName + "(" + comments + ")";
+                    dtSerach.Rows.Add(newRow);
+                }
+            }
+        }
         private void LoadListBoxData()
         {
             if (ExDtMethod.GetRowCount(dtFiled) > 0)
             {
+
                 //不太清楚为什么使用DataSource不能移除
                 //listBox1.DataSource = dtFiled;
                 //listBox1.ValueMember = "COLUMN_NAME";
@@ -107,7 +127,9 @@ namespace ztdTool.UI
             if (listBox1.SelectedIndex >= 0)
             {
                 listBox2.Items.Add(listBox1.SelectedItem);
+                dtSerach.Rows.RemoveAt(listBox1.SelectedIndex);
                 listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+
             }
         }
 
@@ -119,6 +141,7 @@ namespace ztdTool.UI
                 {
                     listBox2.Items.Add(listBox1.Items[i]);
                 }
+                dtSerach.Rows.Clear();
                 listBox1.Items.Clear();
             }
         }
@@ -127,6 +150,7 @@ namespace ztdTool.UI
         {
             if (listBox2.SelectedIndex >= 0)
             {
+                AddDtSerachRow(listBox2.SelectedItem.ToString());
                 listBox1.Items.Add(listBox2.SelectedItem);
                 listBox2.Items.RemoveAt(listBox2.SelectedIndex);
             }
@@ -139,9 +163,17 @@ namespace ztdTool.UI
                 for (var i = 0; i < listBox2.Items.Count; i++)
                 {
                     listBox1.Items.Add(listBox2.Items[i]);
+                    AddDtSerachRow(listBox2.Items[i].ToString());
                 }
                 listBox2.Items.Clear();
             }
+        }
+
+        public void AddDtSerachRow(string val)
+        {
+            DataRow row = dtSerach.NewRow();
+            row["SERACH_FIELD"] = val;
+            dtSerach.Rows.Add(row);
         }
 
         private void btn_GEN_GRID_Click(object sender, EventArgs e)
@@ -200,7 +232,8 @@ namespace ztdTool.UI
         {
             if (!string.IsNullOrWhiteSpace(val))
             {
-                val= Regex.Replace(val,@"\(.+?\)",string.Empty,RegexOptions.IgnoreCase);
+                //val= Regex.Replace(val,@"\(.+?\)",string.Empty,RegexOptions.IgnoreCase);
+                val = val.Substring(0, val.IndexOf('('));
             }
             return val;
         }
@@ -237,6 +270,41 @@ namespace ztdTool.UI
                 setScript(dtTemp);
             }
             this.Close();
+        }
+
+        private void txt_SERACH_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                SerachFieldIndex(txt_SERACH.Text.Trim());
+            }
+        }
+        /// <summary>
+        /// 搜索字段对应的索引
+        /// </summary>
+        private void SerachFieldIndex(string fieldName)
+        {
+            if (!string.IsNullOrWhiteSpace(fieldName))
+            {
+                DataRow[] row = dtSerach.Select(string.Format("SERACH_FIELD LIKE '%{0}%'", fieldName));
+                int index = -1;
+                if (row.Length > 0)
+                {
+                    string columnName = Convert.ToString(row[0]["SERACH_FIELD"]);
+                    //判断当前值是否在listbox存在，不存在默认选择0
+                    //int index = listBox1.Items.Contains(string.Format("{0}({1})", columnName, comments)) ? dtFiled.Rows.IndexOf(row[0])-listBox2.Items.Count : -1;
+                     index = listBox1.Items.IndexOf(string.Format("{0}", columnName));
+                }
+                PositionFieldIndex(index);
+            }
+            
+        }
+        /// <summary>
+        /// 定位到字段对应的位置
+        /// </summary>
+        private void PositionFieldIndex(int index)
+        {
+            listBox1.SelectedIndex = index;
         }
     }
 }

@@ -28,8 +28,7 @@ namespace ztdTool.UI
             try
             {
                 InitColumn();
-                BindData();
-                InitTxtLikeSerach();
+                InitControl();
             }
             catch (Exception ex)
             {
@@ -43,10 +42,17 @@ namespace ztdTool.UI
             dtTable.Columns.Add("SQE");
         }
 
+        private async void InitControl()
+        {
+            Task<DataTable> dtRes = QryColumnAll();
+            var dtTemp = await dtRes;
+            this.gc_TABLE.DataSource = dtTable;
+            InitTxtLikeSerach();
+        }
         /// <summary>
         /// TextBox 实现模糊查询
         /// </summary>
-        private void InitTxtLikeSerach()
+        private async void InitTxtLikeSerach()
         {
             this.txt_SERACH.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             this.txt_SERACH.AutoCompleteSource = AutoCompleteSource.CustomSource;
@@ -61,20 +67,26 @@ namespace ztdTool.UI
             }
             this.txt_SERACH.AutoCompleteCustomSource = ac;
         }
-        private void BindData()
+
+        private async Task<DataTable> QryColumnAll()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendFormat(@"SELECT T2.TABLE_NAME,T2.COMMENTS,ROWNUM AS SQE FROM USER_TABLES T1,USER_TAB_COMMENTS T2 WHERE T1.TABLE_NAME=T2.TABLE_NAME");
-            DataTable dtRes = oraBus.QueryToDataTable(sb.ToString(), "TAB_NAME");
-            if (ExDtMethod.GetRowCount(dtRes) > 0)
+            return await Task.Factory.StartNew(() =>
             {
-                dtTable = dtRes;
-            }
-            else
-            {
-                dtTable.Rows.Clear();
-            }
-            this.gc_TABLE.DataSource = dtTable;
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat(@"SELECT T2.TABLE_NAME,T2.COMMENTS,ROWNUM AS SQE FROM USER_TABLES T1,USER_TAB_COMMENTS T2 WHERE T1.TABLE_NAME=T2.TABLE_NAME");
+                DataTable dtRes = oraBus.QueryToDataTable(sb.ToString(), "TAB_NAME");
+                if (ExDtMethod.GetRowCount(dtRes) > 0)
+                {
+                    dtTable = dtRes;
+                }
+                else
+                {
+                    dtTable.Rows.Clear();
+                }
+                return dtTable;
+            });
+
+
         }
 
         private void btn_SERACH_Click(object sender, EventArgs e)
@@ -110,7 +122,7 @@ namespace ztdTool.UI
         {
             if (string.IsNullOrWhiteSpace(txt_GRID_VIEW.Text))
             {
-                ShowMessage("请输入对应的窗体名称");
+                ShowMessage("请输入对应的GridView");
                 return;
             }
             DataRow row = this.gv_TABLE.GetFocusedDataRow();
@@ -123,16 +135,16 @@ namespace ztdTool.UI
                 frm.setScript = GenScript;
                 frm.ShowDialog();
             }
-            
+
         }
 
         private void gv_TABLE_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
         {
-             DataRow row = this.gv_TABLE.GetFocusedDataRow();
-             if (row != null)
-             {
-                 txt_SERACH.Text = Convert.ToString(row["TABLE_NAME"]);
-             }
+            DataRow row = this.gv_TABLE.GetFocusedDataRow();
+            if (row != null)
+            {
+                txt_SERACH.Text = Convert.ToString(row["TABLE_NAME"]);
+            }
         }
 
         /// <summary>
@@ -187,9 +199,9 @@ namespace ztdTool.UI
             //读取对应窗体的设计代码
             string strAll = IOHelper.Read(path);
             //将程序生成的设计代码分割
-            List<string>  allList = SpiltStrToList();
+            List<string> allList = SpiltStrToList();
             //重写配置文件
-            string resStr=new GenerateScript().GenDeginCode(txt_GRID_VIEW.Text.Trim(),txt_GC_NAME.Text.Trim(), strAll, allList);
+            string resStr = new GenerateScript().GenDeginCode(txt_GRID_VIEW.Text.Trim(), txt_GC_NAME.Text.Trim(), strAll, allList);
             IOHelper.Write(resStr, path);
             ShowMessage("写入成功");
         }

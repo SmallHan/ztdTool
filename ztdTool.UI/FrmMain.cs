@@ -1,4 +1,8 @@
-﻿using System;
+﻿using DevExpress.LookAndFeel;
+using DevExpress.XtraBars;
+using DevExpress.XtraBars.Helpers;
+using DevExpress.XtraTabbedMdi;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -87,14 +91,7 @@ namespace ztdTool.UI
         /// <param name="e"></param>
         private void bar_GENDT_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            if (!CheckConfig()) return;
-            Utils.CloseForm(xtMain);
-            FrmConvert2Dt frm = new FrmConvert2Dt();
-            frm.FormBorderStyle = FormBorderStyle.None;
-            frm.TopLevel = false;
-            frm.Dock = DockStyle.Fill;
-            xtMain.Controls.Add(frm);
-            frm.Show();
+            SetFormAttributeAndShow(new FrmConvert2Dt());
         }
 
         /// <summary>
@@ -104,14 +101,7 @@ namespace ztdTool.UI
         /// <param name="e"></param>
         private void bar_GENCODE_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            if (!CheckConfig()) return;
-            Utils.CloseForm(xtMain);
-            FrmDisgnCode frm = new FrmDisgnCode();
-            frm.FormBorderStyle = FormBorderStyle.None;
-            frm.TopLevel = false;
-            frm.Dock = DockStyle.Fill;
-            xtMain.Controls.Add(frm);
-            frm.Show();
+            SetFormAttributeAndShow(new FrmDisgnCode());
         }
 
         /// <summary>
@@ -121,15 +111,7 @@ namespace ztdTool.UI
         /// <param name="e"></param>
         private void bar_GENINTER_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            if (!CheckConfig()) return;
-            Utils.CloseForm(xtMain);
-            FrmGenInterFace frm = new FrmGenInterFace();
-            frm.FormBorderStyle = FormBorderStyle.None;
-            frm.TopLevel = false;
-            frm.Dock = DockStyle.Fill;
-            xtMain.Controls.Add(frm);
-            frm.Show();
-            
+            SetFormAttributeAndShow(new FrmGenInterFace());
         }
 
         /// <summary>
@@ -139,33 +121,20 @@ namespace ztdTool.UI
         /// <param name="e"></param>
         private void bar_SYS_CONFIG_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            Utils.CloseForm(xtMain);
-            FrmConfigure frm = new FrmConfigure();
-            frm.FormBorderStyle = FormBorderStyle.None;
-            frm.TopLevel = false;
-            frm.Dock = DockStyle.Fill;
-            xtMain.Controls.Add(frm);
-            frm.Show();
+            SetFormAttributeAndShow(new FrmConfigure());
         }
         private void barSelect_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            if (!CheckConfig()) return;
-            Utils.CloseForm(xtMain);
-            FrmDesgnSelctCode frm = new FrmDesgnSelctCode();
-            frm.FormBorderStyle = FormBorderStyle.None;
-            frm.TopLevel = false;
-            frm.Dock = DockStyle.Fill;
-            xtMain.Controls.Add(frm);
-            frm.Show();
+            SetFormAttributeAndShow(new FrmDesgnSelctCode());
         }
         private void barScript_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            if (!CheckConfig()) return;
-            Utils.CloseForm(xtMain);
             SetFormAttributeAndShow(new FrmSqlSelect());
         }
         private void SetFormAttributeAndShow(Form frm)
         {
+            if (!CheckConfig()) return;
+            Utils.CloseForm(xtMain);
             frm.FormBorderStyle = FormBorderStyle.None;
             frm.TopLevel = false;
             frm.Dock = DockStyle.Fill;

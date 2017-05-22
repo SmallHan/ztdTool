@@ -72,25 +72,28 @@
             this.panelControl1.Controls.Add(this.panelControl3);
             this.panelControl1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelControl1.Location = new System.Drawing.Point(0, 28);
+            this.panelControl1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panelControl1.Name = "panelControl1";
-            this.panelControl1.Size = new System.Drawing.Size(256, 758);
+            this.panelControl1.Size = new System.Drawing.Size(256, 915);
             this.panelControl1.TabIndex = 0;
             // 
             // panelControl5
             // 
             this.panelControl5.Controls.Add(this.list_TABLE);
             this.panelControl5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelControl5.Location = new System.Drawing.Point(2, 36);
+            this.panelControl5.Location = new System.Drawing.Point(2, 43);
+            this.panelControl5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panelControl5.Name = "panelControl5";
-            this.panelControl5.Size = new System.Drawing.Size(252, 720);
+            this.panelControl5.Size = new System.Drawing.Size(252, 870);
             this.panelControl5.TabIndex = 2;
             // 
             // list_TABLE
             // 
             this.list_TABLE.Dock = System.Windows.Forms.DockStyle.Fill;
             this.list_TABLE.Location = new System.Drawing.Point(2, 2);
+            this.list_TABLE.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.list_TABLE.Name = "list_TABLE";
-            this.list_TABLE.Size = new System.Drawing.Size(248, 716);
+            this.list_TABLE.Size = new System.Drawing.Size(248, 866);
             this.list_TABLE.TabIndex = 0;
             this.list_TABLE.DoubleClick += new System.EventHandler(this.list_TABLE_DoubleClick);
             // 
@@ -99,24 +102,27 @@
             this.panelControl3.Controls.Add(this.txt_SERACH_TABLE);
             this.panelControl3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelControl3.Location = new System.Drawing.Point(2, 2);
+            this.panelControl3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panelControl3.Name = "panelControl3";
-            this.panelControl3.Size = new System.Drawing.Size(252, 34);
+            this.panelControl3.Size = new System.Drawing.Size(252, 41);
             this.panelControl3.TabIndex = 0;
             // 
             // txt_SERACH_TABLE
             // 
             this.txt_SERACH_TABLE.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txt_SERACH_TABLE.Location = new System.Drawing.Point(2, 2);
+            this.txt_SERACH_TABLE.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txt_SERACH_TABLE.Name = "txt_SERACH_TABLE";
-            this.txt_SERACH_TABLE.Size = new System.Drawing.Size(248, 25);
+            this.txt_SERACH_TABLE.Size = new System.Drawing.Size(248, 26);
             this.txt_SERACH_TABLE.TabIndex = 1;
             this.txt_SERACH_TABLE.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_SERACH_TABLE_KeyDown);
             // 
             // splitterControl1
             // 
             this.splitterControl1.Location = new System.Drawing.Point(256, 28);
+            this.splitterControl1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.splitterControl1.Name = "splitterControl1";
-            this.splitterControl1.Size = new System.Drawing.Size(5, 758);
+            this.splitterControl1.Size = new System.Drawing.Size(5, 915);
             this.splitterControl1.TabIndex = 1;
             this.splitterControl1.TabStop = false;
             // 
@@ -176,8 +182,9 @@
             // 
             this.xtra_SQL.Dock = System.Windows.Forms.DockStyle.Top;
             this.xtra_SQL.Location = new System.Drawing.Point(261, 28);
+            this.xtra_SQL.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.xtra_SQL.Name = "xtra_SQL";
-            this.xtra_SQL.Size = new System.Drawing.Size(1046, 323);
+            this.xtra_SQL.Size = new System.Drawing.Size(1046, 388);
             this.xtra_SQL.TabIndex = 4;
             this.xtra_SQL.SelectedPageChanged += new DevExpress.XtraTab.TabPageChangedEventHandler(this.xtra_SQL_SelectedPageChanged);
             // 
@@ -191,23 +198,25 @@
             this.panelControl2.Controls.Add(this.label2);
             this.panelControl2.Controls.Add(this.label1);
             this.panelControl2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelControl2.Location = new System.Drawing.Point(261, 757);
+            this.panelControl2.Location = new System.Drawing.Point(261, 908);
+            this.panelControl2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panelControl2.Name = "panelControl2";
-            this.panelControl2.Size = new System.Drawing.Size(1046, 29);
+            this.panelControl2.Size = new System.Drawing.Size(1046, 35);
             this.panelControl2.TabIndex = 8;
             // 
             // lbl_SERACH
             // 
             this.lbl_SERACH.AutoSize = true;
-            this.lbl_SERACH.Location = new System.Drawing.Point(906, 6);
+            this.lbl_SERACH.Location = new System.Drawing.Point(906, 7);
             this.lbl_SERACH.Name = "lbl_SERACH";
-            this.lbl_SERACH.Size = new System.Drawing.Size(0, 15);
+            this.lbl_SERACH.Size = new System.Drawing.Size(0, 18);
             this.lbl_SERACH.TabIndex = 6;
             // 
             // txt_NUMBER
             // 
             this.txt_NUMBER.EditValue = "1000";
             this.txt_NUMBER.Location = new System.Drawing.Point(716, 2);
+            this.txt_NUMBER.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txt_NUMBER.Name = "txt_NUMBER";
             this.txt_NUMBER.Properties.Mask.EditMask = "[1-9]{1}[0-9]{0,6}";
             this.txt_NUMBER.Properties.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.RegEx;
@@ -219,9 +228,10 @@
             this.ck_MORE_NUMBER.AutoSize = true;
             this.ck_MORE_NUMBER.Checked = true;
             this.ck_MORE_NUMBER.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ck_MORE_NUMBER.Location = new System.Drawing.Point(563, 6);
+            this.ck_MORE_NUMBER.Location = new System.Drawing.Point(563, 7);
+            this.ck_MORE_NUMBER.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ck_MORE_NUMBER.Name = "ck_MORE_NUMBER";
-            this.ck_MORE_NUMBER.Size = new System.Drawing.Size(149, 19);
+            this.ck_MORE_NUMBER.Size = new System.Drawing.Size(150, 22);
             this.ck_MORE_NUMBER.TabIndex = 4;
             this.ck_MORE_NUMBER.Text = "限制查询最多条数";
             this.ck_MORE_NUMBER.UseVisualStyleBackColor = true;
@@ -229,50 +239,51 @@
             // lbl_TIME
             // 
             this.lbl_TIME.AutoSize = true;
-            this.lbl_TIME.Location = new System.Drawing.Point(265, 6);
+            this.lbl_TIME.Location = new System.Drawing.Point(265, 7);
             this.lbl_TIME.Name = "lbl_TIME";
-            this.lbl_TIME.Size = new System.Drawing.Size(0, 15);
+            this.lbl_TIME.Size = new System.Drawing.Size(0, 18);
             this.lbl_TIME.TabIndex = 3;
             // 
             // lbl_ROW
             // 
             this.lbl_ROW.AutoSize = true;
-            this.lbl_ROW.Location = new System.Drawing.Point(89, 6);
+            this.lbl_ROW.Location = new System.Drawing.Point(89, 7);
             this.lbl_ROW.Name = "lbl_ROW";
-            this.lbl_ROW.Size = new System.Drawing.Size(0, 15);
+            this.lbl_ROW.Size = new System.Drawing.Size(0, 18);
             this.lbl_ROW.TabIndex = 2;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(184, 7);
+            this.label2.Location = new System.Drawing.Point(184, 8);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(75, 15);
+            this.label2.Size = new System.Drawing.Size(72, 18);
             this.label2.TabIndex = 1;
             this.label2.Text = "查询用时:";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 6);
+            this.label1.Location = new System.Drawing.Point(8, 7);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 15);
+            this.label1.Size = new System.Drawing.Size(73, 18);
             this.label1.TabIndex = 0;
             this.label1.Text = "数据行数:";
             // 
             // panelControl6
             // 
             this.panelControl6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelControl6.Location = new System.Drawing.Point(261, 351);
+            this.panelControl6.Location = new System.Drawing.Point(261, 416);
+            this.panelControl6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panelControl6.Name = "panelControl6";
-            this.panelControl6.Size = new System.Drawing.Size(1046, 406);
+            this.panelControl6.Size = new System.Drawing.Size(1046, 492);
             this.panelControl6.TabIndex = 9;
             // 
             // FrmSqlSelect
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1307, 786);
+            this.ClientSize = new System.Drawing.Size(1307, 943);
             this.Controls.Add(this.panelControl6);
             this.Controls.Add(this.panelControl2);
             this.Controls.Add(this.xtra_SQL);
@@ -280,6 +291,7 @@
             this.Controls.Add(this.panelControl1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "FrmSqlSelect";
             this.Text = "FrmSqlSelect";
             this.Load += new System.EventHandler(this.FrmSqlSelect_Load);
