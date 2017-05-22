@@ -11,13 +11,32 @@ namespace ztdTool.Common
     /// <summary>
     /// DataTable扩展方法
     /// </summary>
-    public static class ExDtMethod 
+    public static class ExDtMethod
     {
         public static int GetRowCount(this DataTable dt)
         {
-            return dt != null && dt.Rows.Count >= 0 ? dt.Rows.Count : -1;
+            return dt != null && (dt.Rows.Count >= 0 || dt.Columns.Count > 0) ? dt.Rows.Count : -1;
         }
 
+        public static bool IsTransOK(this DataTable dt)
+        {
+            if (dt == null) return false;
+            return !(dt.Rows.Count <= 0 && dt.Columns.Count <= 0);
+        }
+
+        /// <summary>
+        ///  给DataTable中的每条记录执行某个操作
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="action"></param>
+        public static void ForEach(this DataTable table, Action<DataRow> action)
+        {
+            for (int i = 0; i < table.Rows.Count; i++)
+            {
+                DataRow current = table.Rows[i];
+                action(current);
+            }
+        }
         /// <summary>
         /// 获取DataTable中符合某个条件的唯一记录
         /// </summary>
@@ -76,6 +95,6 @@ namespace ztdTool.Common
             }
             return iList;
         }
- 
+
     }
 }
