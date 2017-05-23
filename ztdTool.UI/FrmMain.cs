@@ -121,7 +121,7 @@ namespace ztdTool.UI
         /// <param name="e"></param>
         private void bar_SYS_CONFIG_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            SetFormAttributeAndShow(new FrmConfigure());
+            SetFormAttributeAndShow(new FrmConfigure(),false);
         }
         private void barSelect_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -131,9 +131,9 @@ namespace ztdTool.UI
         {
             SetFormAttributeAndShow(new FrmSqlSelect());
         }
-        private void SetFormAttributeAndShow(Form frm)
+        private void SetFormAttributeAndShow(Form frm,bool flg=true)
         {
-            if (!CheckConfig()) return;
+            if (flg && !CheckConfig()) return;
             Utils.CloseForm(xtMain);
             frm.FormBorderStyle = FormBorderStyle.None;
             frm.TopLevel = false;
